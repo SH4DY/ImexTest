@@ -5,8 +5,8 @@ import org.graphwalker.java.annotation.Model;
 import org.graphwalker.java.annotation.Vertex;
 import org.graphwalker.java.annotation.Edge;
 
-@Model(file = "com/shady/imextest/modell_logisch.graphml")
-public interface modell_logisch {
+@Model(file = "com/shady/imextest/ModellLogisch.graphml")
+public interface ModellLogisch {
 
     @Vertex()
     void v_Proposal_5_Libor();
