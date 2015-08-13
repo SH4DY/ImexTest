@@ -6,9 +6,15 @@ import org.graphwalker.core.condition.TimeDuration;
 import org.graphwalker.core.generator.AStarPath;
 import org.graphwalker.core.generator.RandomPath;
 import org.graphwalker.core.machine.ExecutionContext;
+import org.graphwalker.java.test.Result;
 import org.graphwalker.java.test.TestBuilder;
+import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -24,22 +30,18 @@ import java.util.concurrent.TimeUnit;
  * weniger Methoden.
  * Created by shady on 11/08/15.
  */
-public class ImexTest extends ExecutionContext implements ModellLogisch{
+public class ImexTest extends ExecutionContext implements ModellLogisch {
     public final static Path MODEL_PATH = Paths.get("com/shady/imextest/ModellLogisch.graphml");
+    private WebDriver driver;
 
     @Test
     public void runSmokeTest() {
-//        new TestBuilder()
-//                .setModel(MODEL_PATH)
-//                .setContext(new ImexTest())
-//                .setPathGenerator(new AStarPath(new ReachedVertex("v_Proposal_0")))
-//                .setStart("v_OnPage")
-//                .execute();
-
-        new TestBuilder()
+        TestBuilder tb = new TestBuilder()
                 .addModel(MODEL_PATH,
-                new ImexTest().setPathGenerator(new RandomPath(new ReachedVertex("v_Proposal_0"))))
-                .execute();
+                        new ImexTest().setPathGenerator(new RandomPath(new ReachedVertex("v_Proposal_0"))));
+
+        Result result = tb.execute();
+        System.out.println("Done: [" + result.getErrors().toString() + "," + result.getFailedCount() + "]");
     }
 
 //    @Test
@@ -64,8 +66,74 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
 
     @Override
     public void e_init() {
+        driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+//        try {
+//            driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome());
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+
+    @Override
+    public void v_OnPage() {
+        driver.get("https://www.raiffeisen.ch/rch/de/privatkunden/hypotheken/wohneigentum-kaufen/wieviel-eigenheim-kann-ich-mir-leisten.html");
+    }
+
+
+    @Override
+    public void v_PLZPrompt() {
+    }
+
+    @Override
+    public void e_EnterPLZ() {
+        WebElement searchBox = driver.findElement(By.className("dropdown-toggle"));
+        searchBox.sendKeys("6900");
+
+        WebElement btn = driver.findElement(By.partialLinkText("Lugano"));
+        btn.click();
+    }
+
+    @Override
+    public void v_Wieviel() {
 
     }
+
+    @Override
+    public void e_EnterCredibility() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        driver.findElement(By.id("financingObject.initialCost")).sendKeys("1000000");
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Now perform ACTION!!!");
+
+        WebElement element = driver.findElement(By.xpath("//*[@id=\"maincontent\"]/div/div/div[3]/div[3]/div/div[2]/a"));
+
+        Actions actions = new Actions(driver);
+
+        actions.moveToElement(element).click().perform();
+    }
+
+    @Override
+    public void e_ClickStartProposal() {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        driver.findElement(By.cssSelector("body > div.perspective > div.viewport > div.parbase.consultantflyin > div > div > div > div.content.ng-scope > div > div.par.parsys > div.parbase.linkbutton.section > a")).click();
+    }
+
 
     @Override
     public void v_Proposal_0() {
@@ -112,12 +180,10 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
 
     }
 
-
     @Override
     public void v_Proposal_4_Libor() {
 
     }
-
 
     @Override
     public void v_Proposal_5() {
@@ -133,7 +199,6 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
     public void v_Proposal_6() {
 
     }
-
 
     @Override
     public void v_Proposal_6_Libor() {
@@ -160,19 +225,10 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
 
     }
 
-    @Override
-    public void e_EnterCredibility() {
 
-    }
 
     @Override
     public void v_Zinsentwicklung() {
-
-    }
-
-
-    @Override
-    public void v_Wieviel() {
 
     }
 
@@ -192,17 +248,7 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
     }
 
     @Override
-    public void v_PLZPrompt() {
-
-    }
-
-    @Override
     public void e_ClickWichtig() {
-
-    }
-
-    @Override
-    public void e_ClickStartProposal() {
 
     }
 
@@ -228,11 +274,6 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
     }
 
     @Override
-    public void v_OnPage() {
-        System.out.println("OnPage");
-    }
-
-    @Override
     public void e_ClickSehrWichtig() {
 
     }
@@ -248,16 +289,12 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
     }
 
 
-
     @Override
     public void e_ClickPersoenlichJa() {
 
     }
 
-    @Override
-    public void e_EnterPLZ() {
 
-    }
 
 
     @Override
