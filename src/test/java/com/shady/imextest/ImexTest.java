@@ -1,7 +1,9 @@
 package com.shady.imextest;
 
 import org.graphwalker.core.condition.EdgeCoverage;
+import org.graphwalker.core.condition.ReachedVertex;
 import org.graphwalker.core.condition.TimeDuration;
+import org.graphwalker.core.generator.AStarPath;
 import org.graphwalker.core.generator.RandomPath;
 import org.graphwalker.core.machine.ExecutionContext;
 import org.graphwalker.java.test.TestBuilder;
@@ -25,46 +27,44 @@ import java.util.concurrent.TimeUnit;
 public class ImexTest extends ExecutionContext implements ModellLogisch{
     public final static Path MODEL_PATH = Paths.get("com/shady/imextest/ModellLogisch.graphml");
 
-//    @Test
-//    public void runSmokeTest() {
+    @Test
+    public void runSmokeTest() {
 //        new TestBuilder()
 //                .setModel(MODEL_PATH)
 //                .setContext(new ImexTest())
 //                .setPathGenerator(new AStarPath(new ReachedVertex("v_Proposal_0")))
+//                .setStart("v_OnPage")
+//                .execute();
+
+        new TestBuilder()
+                .addModel(MODEL_PATH,
+                new ImexTest().setPathGenerator(new RandomPath(new ReachedVertex("v_Proposal_0"))))
+                .execute();
+    }
+
+//    @Test
+//    public void runFunctionalTest() {
+//        new TestBuilder()
+//                .setModel(MODEL_PATH)
+//                .setContext(new ImexTest())
+//                .setPathGenerator(new RandomPath(new EdgeCoverage(100)))
+//                .setStart("e_Init")
+//                .execute();
+//    }
+//
+//    @Test
+//    public void runStabilityTest() {
+//        new TestBuilder()
+//                .setModel(MODEL_PATH)
+//                .setContext(new ImexTest())
+//                .setPathGenerator(new RandomPath(new TimeDuration(30, TimeUnit.SECONDS)))
 //                .setStart("e_Init")
 //                .execute();
 //    }
 
-    @Test
-    public void runFunctionalTest() {
-        new TestBuilder()
-                .setModel(MODEL_PATH)
-                .setContext(new ImexTest())
-                .setPathGenerator(new RandomPath(new EdgeCoverage(100)))
-                .setStart("e_Init")
-                .execute();
-    }
-
-    @Test
-    public void runStabilityTest() {
-        new TestBuilder()
-                .setModel(MODEL_PATH)
-                .setContext(new ImexTest())
-                .setPathGenerator(new RandomPath(new TimeDuration(30, TimeUnit.SECONDS)))
-                .setStart("e_Init")
-                .execute();
-    }
-
     @Override
     public void e_init() {
-        WebDriver driver = null;
-        try {
-            driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome());
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
 
-        driver.get("http://www.engadget.com");
     }
 
     @Override
@@ -229,7 +229,7 @@ public class ImexTest extends ExecutionContext implements ModellLogisch{
 
     @Override
     public void v_OnPage() {
-
+        System.out.println("OnPage");
     }
 
     @Override
