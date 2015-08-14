@@ -1,27 +1,18 @@
-package com.shady.imextest;
+package com.shady.imextest.modelimplementations;
 
+import com.shady.imextest.ModellLogisch;
 import org.graphwalker.core.condition.EdgeCoverage;
 import org.graphwalker.core.condition.ReachedVertex;
-import org.graphwalker.core.condition.TimeDuration;
-import org.graphwalker.core.generator.AStarPath;
 import org.graphwalker.core.generator.RandomPath;
 import org.graphwalker.core.machine.ExecutionContext;
+import org.graphwalker.java.annotation.GraphWalker;
 import org.graphwalker.java.test.Result;
 import org.graphwalker.java.test.TestBuilder;
-import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
@@ -32,29 +23,30 @@ import java.util.concurrent.TimeUnit;
  * weniger Methoden.
  * Created by shady on 11/08/15.
  */
+@GraphWalker(value = "random(edge_coverage(100))", start = "e_init")
 public class ImexTest extends ExecutionContext implements ModellLogisch {
     public final static Path MODEL_PATH = Paths.get("com/shady/imextest/ModellLogisch.graphml");
     private WebDriver driver;
 
-    @Test
-    public void runSmokeTest() {
-        TestBuilder tb = new TestBuilder()
-                .addModel(MODEL_PATH,
-                        new ImexTest().setPathGenerator(new RandomPath(new ReachedVertex("v_Proposal_0"))));
+//    @Test
+//    public void runSmokeTest() {
+//        TestBuilder tb = new TestBuilder()
+//                .addModel(MODEL_PATH,
+//                        new ImexTest().setPathGenerator(new RandomPath(new ReachedVertex("v_Proposal_0"))));
+//
+//        Result result = tb.execute();
+//        System.out.println("Done: [" + result.getErrors().toString() + "," + result.getFailedCount() + "]");
+//    }
 
+    @Test
+    public void runFunctionalTest() {
+                TestBuilder tb = new TestBuilder()
+                        .addModel(MODEL_PATH,
+                                new ImexTest().setPathGenerator(new RandomPath(new EdgeCoverage(100))));
         Result result = tb.execute();
         System.out.println("Done: [" + result.getErrors().toString() + "," + result.getFailedCount() + "]");
-    }
 
-//    @Test
-//    public void runFunctionalTest() {
-//        new TestBuilder()
-//                .setModel(MODEL_PATH)
-//                .setContext(new ImexTest())
-//                .setPathGenerator(new RandomPath(new EdgeCoverage(100)))
-//                .setStart("e_Init")
-//                .execute();
-//    }
+    }
 //
 //    @Test
 //    public void runStabilityTest() {
@@ -70,6 +62,7 @@ public class ImexTest extends ExecutionContext implements ModellLogisch {
     public void e_init() {
         driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+
 //        try {
 //            driver = new RemoteWebDriver(new URL("http://localhost:9515"), DesiredCapabilities.chrome());
 //        } catch (MalformedURLException e) {
@@ -93,8 +86,11 @@ public class ImexTest extends ExecutionContext implements ModellLogisch {
         WebElement searchBox = driver.findElement(By.className("dropdown-toggle"));
         searchBox.sendKeys("6900");
 
-        WebElement btn = driver.findElement(By.partialLinkText("Lugano"));
-        btn.click();
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.elementToBeClickable(By.partialLinkText("Lugano")));
+
+        driver.findElement(By.partialLinkText("Lugano")).click();
+
     }
 
     @Override
@@ -104,29 +100,33 @@ public class ImexTest extends ExecutionContext implements ModellLogisch {
 
     @Override
     public void e_EnterCredibility() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
+        Wait wait = new FluentWait<WebDriver>(driver)
+                .withTimeout(5, TimeUnit.SECONDS)
+                .pollingEvery(500, TimeUnit.MILLISECONDS)
+                .ignoring(WebDriverException.class);
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("financingObject.initialCost")));
 
         driver.findElement(By.id("financingObject.initialCost")).clear();
         driver.findElement(By.id("financingObject.initialCost")).sendKeys("100000");
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        System.out.println("Now perform ACTION!!!");
-
-        WebElement element = driver.findElement(By.xpath("//*[@id=\"maincontent\"]/div/div/div[3]/div[3]/div/div[2]/a"));
-
-        Actions actions = new Actions(driver);
-
-        actions.moveToElement(element).click().perform();
+        driver.findElement(By.xpath("//*[@id=\"maincontent\"]/div/div/div[3]/div[3]/div/div[2]/a")).click();
+//
+//        Actions actions = new Actions(driver);
+//
+//        actions.moveToElement(element).click().perform();
     }
 
     @Override
