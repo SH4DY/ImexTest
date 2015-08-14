@@ -17,6 +17,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -107,10 +109,13 @@ public class ImexTest extends ExecutionContext implements ModellLogisch {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        driver.findElement(By.id("financingObject.initialCost")).sendKeys("1000000");
+
+
+        driver.findElement(By.id("financingObject.initialCost")).clear();
+        driver.findElement(By.id("financingObject.initialCost")).sendKeys("100000");
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -134,123 +139,147 @@ public class ImexTest extends ExecutionContext implements ModellLogisch {
         driver.findElement(By.cssSelector("body > div.perspective > div.viewport > div.parbase.consultantflyin > div > div > div > div.content.ng-scope > div > div.par.parsys > div.parbase.linkbutton.section > a")).click();
     }
 
+    @Override
+    public void e_ClickUnwichtig() {
+        driver.findElement(By.linkText("unwichtig")).click();
+    }
 
     @Override
-    public void v_Proposal_0() {
+    public void e_ClickWichtig() {
+        driver.findElement(By.linkText("wichtig")).click();
+    }
 
+    @Override
+    public void e_ClickSehrWichtig() {
+        driver.findElement(By.linkText("sehr wichtig")).click();
+    }
+
+    @Override
+    public void e_ClickSinkend() {
+        driver.findElement(By.linkText("sinkend")).click();
+    }
+
+    @Override
+    public void e_ClickGleichbleibend() {
+        driver.findElement(By.linkText("gleichbleibend")).click();
+    }
+
+    @Override
+    public void e_ClickSteigend() {
+        driver.findElement(By.linkText("steigend")).click();
+    }
+
+    @Override
+    public void e_ClickAusgabenJa() {
+        driver.findElement(By.linkText("ja")).click();
+    }
+    @Override
+    public void e_ClickAusgabenNein() {
+        driver.findElement(By.linkText("nein")).click();
+    }
+
+    @Override
+    public void e_ClickPersoenlichJa() {
+        driver.findElement(By.linkText("ja")).click();
+    }
+
+    @Override
+    public void e_ClickPersoenlichNein() {
+        driver.findElement(By.linkText("nein")).click();
+    }
+
+    /*
+    Die folgenden Knoten repräsentieren die Endzustände. Mit dieser Art
+    der Modellierung muss in ihnen nur sehr wenig Code für Überprüfungen
+    untergebracht werden.
+     */
+    @Override
+    public void v_Proposal_0() {
     }
 
     @Override
     public void v_Proposal_0_Libor() {
-
     }
 
     @Override
     public void v_Proposal_1() {
-
     }
 
     @Override
     public void v_Proposal_1_Libor() {
-
     }
 
     @Override
     public void v_Proposal_2() {
-
     }
 
     @Override
     public void v_Proposal_2_Libor() {
-
     }
 
     @Override
     public void v_Proposal_3() {
-
     }
 
     @Override
     public void v_Proposal_3_Libor() {
-
     }
 
     @Override
     public void v_Proposal_4() {
-
     }
 
     @Override
     public void v_Proposal_4_Libor() {
-
     }
 
     @Override
     public void v_Proposal_5() {
-
     }
 
     @Override
     public void v_Proposal_5_Libor() {
-
     }
 
     @Override
     public void v_Proposal_6() {
-
     }
 
     @Override
     public void v_Proposal_6_Libor() {
-
     }
 
     @Override
     public void v_Proposal_7() {
-
     }
 
     @Override
     public void v_Proposal_7_Libor() {
-
     }
 
     @Override
     public void v_Proposal_8() {
-
     }
 
     @Override
     public void v_Proposal_8_Libor() {
-
     }
 
-
-
+    /*
+    Dies sind die Knoten (Zustände) der 4 Fragen. Denkbar wären hier
+    Prüfungen ob Elemente richtig positioniert sind.
+     */
     @Override
     public void v_Zinsentwicklung() {
 
     }
 
-    @Override
-    public void e_ClickUnwichtig() {
-
-    }
-
-    @Override
-    public void e_ClickSteigend() {
-
-    }
 
     @Override
     public void v_ZinsentwicklungPersoenlich() {
 
     }
 
-    @Override
-    public void e_ClickWichtig() {
-
-    }
 
     @Override
     public void v_Proposal() {
@@ -258,15 +287,6 @@ public class ImexTest extends ExecutionContext implements ModellLogisch {
     }
 
 
-    @Override
-    public void e_ClickSinkend() {
-
-    }
-
-    @Override
-    public void e_ClickGleichbleibend() {
-
-    }
 
     @Override
     public void v_Ausgaben() {
@@ -274,36 +294,9 @@ public class ImexTest extends ExecutionContext implements ModellLogisch {
     }
 
     @Override
-    public void e_ClickSehrWichtig() {
-
-    }
-
-    @Override
-    public void e_ClickAusgabenJa() {
-
-    }
-
-    @Override
-    public void e_ClickPersoenlichNein() {
-
-    }
-
-
-    @Override
-    public void e_ClickPersoenlichJa() {
-
-    }
-
-
-
-
-    @Override
     public void v_PlanbareKosten() {
 
     }
 
-    @Override
-    public void e_ClickAusgabenNein() {
 
-    }
 }
